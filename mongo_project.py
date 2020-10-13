@@ -5,12 +5,14 @@ MONGODB_URI = os.getenv("MONGO_URI")
 DBS_NAME = "myTestDB"
 COLLECTION_NAME = "myFirstMDB"
 
+
 def mongo_connect(url):
     try:
         conn = pymongo.MongoClient(url)
         return conn
     except pymongo.errors.ConnectionFailure as e:
         print("Could not connect to MongoDB: %s") % e
+
 
 def show_menu():
     print("")
@@ -23,6 +25,7 @@ def show_menu():
     option = input("Enter option: ")
     return option
 
+
 def get_record():
     print("")
     first = input("Enter first name > ")
@@ -30,14 +33,15 @@ def get_record():
 
     try:
         doc = coll.find_one({'first': first.lower(), 'last': last.lower()})
-    except:
+    except Exception:
         print("Error accessing the database")
-    
+
     if not doc:
         print("")
         print("Error! No results found.")
-    
+
     return doc
+
 
 def add_record():
     print("")
@@ -57,8 +61,9 @@ def add_record():
         coll.insert_one(new_doc)
         print("")
         print("Document inserted")
-    except:
+    except Exception:
         print("Error accessing the database")
+
 
 def find_record():
     doc = get_record()
@@ -67,6 +72,7 @@ def find_record():
         for k, v in doc.items():
             if k != "_id":
                 print(k.capitalize() + ": " + v.capitalize())
+
 
 def edit_record():
     doc = get_record()
@@ -79,12 +85,12 @@ def edit_record():
 
                 if update_doc[k] == "":
                     update_doc[k] = v
-        
+
         try:
             coll.update_one(doc, {'$set': update_doc})
             print("")
             print("Document updated")
-        except:
+        except Exception:
             print("Error accessing the database")
 
 
@@ -97,7 +103,7 @@ def delete_record():
         for k, v in doc.items():
             if k != "_id":
                 print(k.capitalize() + ": " + v.capitalize())
-        
+
         print("")
         confirmation = input("Is this the document you want to delete?\nY or N > ")
         print("")
@@ -106,10 +112,11 @@ def delete_record():
             try:
                 coll.remove(doc)
                 print("Document deleted!")
-            except:
+            except Exception:
                 print("Document not deleted")
         else:
             print("Document not deleted")
+
 
 def main_loop():
     while True:
